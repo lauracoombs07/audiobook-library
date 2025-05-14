@@ -49,7 +49,7 @@ public class Audiobook {
           joinColumns = @JoinColumn(name = "audiobook_id"),
           inverseJoinColumns = @JoinColumn(name = "author_id")
   )
-  private Set<Author> authors = new HashSet<>();
+  private Set<Author> authors;
 
   @ManyToMany
 //  @OrderBy("lastName ASC, firstName ASC")
