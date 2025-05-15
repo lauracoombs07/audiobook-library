@@ -1,10 +1,9 @@
 package com.library.audiobooks.audiobook_library.model;
 
 import brave.internal.Nullable;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -26,6 +25,9 @@ public class Author {
   private String lastName;
 
   @ManyToMany(fetch = FetchType.LAZY, mappedBy = "authors")
+  @JsonIgnore
+  @ToString.Exclude
+  @EqualsAndHashCode.Exclude
   private Set<Audiobook> audiobooks = new HashSet<>();
 
   // convenience method

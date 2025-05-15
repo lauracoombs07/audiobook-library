@@ -28,8 +28,8 @@ public class AuthorService {
     // Map entity to DTO
     List<AudiobookSummaryDTO> sortedAudiobooks = author.getAudiobooks()
             .stream()
-            .sorted(Comparator.comparing(Audiobook::getTitle))
-            .map(a -> new AudiobookSummaryDTO(a.getId(), a.getTitle()))
+            .sorted(Comparator.comparing(Audiobook::getAudiobookTitle))
+            .map(a -> new AudiobookSummaryDTO(a.getId(), a.getAudiobookTitle()))
             .collect(Collectors.toList());
 
     AuthorDTO dto = new AuthorDTO();

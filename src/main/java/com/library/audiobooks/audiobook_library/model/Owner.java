@@ -1,20 +1,15 @@
 package com.library.audiobooks.audiobook_library.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.HashSet;
-import java.util.Set;
-
 @Entity
 @Data  // Generates getters, setters, toString, equals, and hashCode
 @NoArgsConstructor
 @AllArgsConstructor
-public class Narrator {
-
+public class Owner {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
@@ -25,9 +20,10 @@ public class Narrator {
   @Column(name = "last_name", nullable = false)
   private String lastName;
 
-  @ManyToMany(mappedBy = "narrators")
-  @JsonIgnore
-  @OrderBy("audiobookTitle ASC")
-  private Set<Audiobook> audiobooks = new HashSet<>();
+  private String source;
+
+  // account
+
+  // look up audiobooks by owner?
 
 }

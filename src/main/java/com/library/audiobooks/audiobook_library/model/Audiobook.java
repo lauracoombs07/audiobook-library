@@ -4,10 +4,10 @@ package com.library.audiobooks.audiobook_library.model;
 import brave.internal.Nullable;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+import java.time.Instant;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -21,27 +21,39 @@ public class Audiobook {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column(nullable = false)
-  private String title;
+  @Column(name = "audiobook_title", nullable = false)
+  private String audiobookTitle;
 
-  private String genre;
+  @ManyToOne
+  @JoinColumn(name = "fk_genre_id")
+  private Genre genre;
 
-  private String owner; // or location?
+  @ManyToOne
+  @JoinColumn(name = "fk_owner_id")
+  private Owner owner;
 
   @Column(name = "description", length = 512)
   private String description;
 
-  @Column(name = "series_number")
-  private String seriesNumber;
+  @Column(name = "series_installment")
+  private String seriesInstallment;
 
   @Column(name = "duration")
   private String duration;
 
+  @Column(name = "created_dt", nullable = false)
+  private Date createdDate = new Date();
+
+  @Column(name = "last_updated_dt")
+  private Date lastUpdatedDate;
+
   @ManyToOne
-  @JoinColumn(name = "series_id")
+  @JoinColumn(name = "fk_series_id")
   private Series series;
 
   @ManyToMany
+  @ToString.Exclude
+  @EqualsAndHashCode.Exclude
   @OrderBy("lastName ASC, firstName ASC")
   @Nullable
   @JoinTable(
@@ -52,7 +64,9 @@ public class Audiobook {
   private Set<Author> authors;
 
   @ManyToMany
-//  @OrderBy("lastName ASC, firstName ASC")
+  @ToString.Exclude
+  @EqualsAndHashCode.Exclude
+  @OrderBy("lastName ASC, firstName ASC")
   @JoinTable(
           name = "audiobook_narrator",
           joinColumns = @JoinColumn(name = "audiobook_id"),

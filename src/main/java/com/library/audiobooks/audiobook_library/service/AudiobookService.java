@@ -1,14 +1,8 @@
 package com.library.audiobooks.audiobook_library.service;
 
 import com.library.audiobooks.audiobook_library.dto.AudiobookDTO;
-import com.library.audiobooks.audiobook_library.model.Audiobook;
-import com.library.audiobooks.audiobook_library.model.Author;
-import com.library.audiobooks.audiobook_library.model.Narrator;
-import com.library.audiobooks.audiobook_library.model.Series;
-import com.library.audiobooks.audiobook_library.repository.AudiobookRepository;
-import com.library.audiobooks.audiobook_library.repository.AuthorRepository;
-import com.library.audiobooks.audiobook_library.repository.NarratorRepository;
-import com.library.audiobooks.audiobook_library.repository.SeriesRepository;
+import com.library.audiobooks.audiobook_library.model.*;
+import com.library.audiobooks.audiobook_library.repository.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,18 +19,24 @@ public class AudiobookService {
   private final AudiobookRepository audiobookRepository;
   private final AuthorRepository authorRepository;
   private final AuthorService authorService;
+  private final GenreRepository genreRepository;
   private final NarratorRepository narratorRepository;
+  private final OwnerRepository ownerRepository;
   private final SeriesRepository seriesRepository;
 
   public AudiobookService(AudiobookRepository audiobookRepository,
                           AuthorRepository authorRepository,
                           AuthorService authorService,
+                          GenreRepository genreRepository,
                           NarratorRepository narratorRepository,
+                          OwnerRepository ownerRepository,
                           SeriesRepository seriesRepository) {
     this.audiobookRepository = audiobookRepository;
     this.authorRepository = authorRepository;
     this.authorService = authorService;
+    this.genreRepository = genreRepository;
     this.narratorRepository = narratorRepository;
+    this.ownerRepository = ownerRepository;
     this.seriesRepository = seriesRepository;
   }
 
@@ -90,13 +90,28 @@ public class AudiobookService {
   public Audiobook createAudiobook(AudiobookDTO audiobookDTO) {
     // Convert DTO to entity
     Audiobook audiobook = new Audiobook();
-    audiobook.setTitle(audiobookDTO.getTitle());
-    audiobook.setGenre(audiobookDTO.getGenre());
-    audiobook.setOwner(audiobookDTO.getOwner());
+
+    audiobook.setAudiobookTitle(audiobookDTO.getAudiobookTitle());
     audiobook.setDescription(audiobookDTO.getDescription());
-    audiobook.setSeriesNumber(audiobookDTO.getSeriesNumber());
+    audiobook.setSeriesInstallment(audiobookDTO.getSeriesInstallment());
     audiobook.setDuration(audiobookDTO.getDuration());
-    System.out.println(audiobookDTO);
+
+    // Handle Genre
+    // should be able to handle multiple genres.
+    // Preferably a String list and look up by name
+    if(audiobookDTO.getGenreId() != null) {
+      Genre genre = genreRepository.findById(audiobookDTO.getGenreId())
+              .orElseThrow(() -> new RuntimeException("Genre not found"));
+      audiobook.setGenre(genre);
+    }
+
+    // Handle Owner
+    if (audiobookDTO.getOwnerId() != null) {
+      Owner owner = ownerRepository.findById(audiobookDTO.getOwnerId())
+              .orElseThrow(() -> new RuntimeException("Owner does not exist in database"));
+      audiobook.setOwner(owner);
+    }
+
     // Handle Series (if applicable)
     if (audiobookDTO.getSeriesId() != null) {
       Series series = seriesRepository.findById(audiobookDTO.getSeriesId())
@@ -106,23 +121,21 @@ public class AudiobookService {
 
     // Handle Authors
     if (audiobookDTO.getAuthorIds() != null && !audiobookDTO.getAuthorIds().isEmpty()) {
-            Set<Author> authors = authorService.findAuthorsByIds(audiobookDTO.getAuthorIds());
       // Step 1: Load Authors from DB
-      List<Author> authorList = authorRepository.findAllById(audiobookDTO.getAuthorIds());
-      System.out.println(authorList);
+      Set<Author> authors = authorService.findAuthorsByIds(audiobookDTO.getAuthorIds());
       // Step 2: Set only in the owning side
-//      Set<Author> authors = new HashSet<>(authorList);
       audiobook.setAuthors(authors);
-      System.out.println(audiobook);
     } else {
       throw new RuntimeException("At least one author must be provided");
     }
 
     // Handle Narrators
     if (audiobookDTO.getNarratorIds() != null && !audiobookDTO.getNarratorIds().isEmpty()) {
-      List<Narrator> narratorList = (List<Narrator>) narratorRepository.findAllById(audiobookDTO.getNarratorIds());
+      List<Narrator> narratorList = narratorRepository.findAllById(audiobookDTO.getNarratorIds());
       Set<Narrator> narrators = new HashSet<>(narratorList);  // Convert List to Set
       audiobook.setNarrators(narrators);  // Set narrators in audiobook
+    } else {
+      throw new RuntimeException("At least one Narrator must be provided");
     }
 
     // Save the Audiobook

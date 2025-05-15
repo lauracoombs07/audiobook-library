@@ -20,4 +20,6 @@ public class Series {
 
   @Column(name = "total_count", nullable = false)
   private Integer totalCount;
+
+  // look up books by series
 }
