@@ -1,5 +1,6 @@
 package com.library.audiobooks.audiobook_library.dto;
 
+import com.library.audiobooks.audiobook_library.model.Audiobook;
 import com.library.audiobooks.audiobook_library.model.Genre;
 import com.library.audiobooks.audiobook_library.model.Owner;
 import com.library.audiobooks.audiobook_library.model.Series;
@@ -19,3 +20,8 @@ public class AudiobookDTO {
   private List<Long> authorIds;
   private List<Long> narratorIds;
 }
+
+
+//public Audiobook toDAO() {
+//
+//}

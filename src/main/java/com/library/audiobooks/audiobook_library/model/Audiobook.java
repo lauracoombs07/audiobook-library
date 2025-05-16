@@ -44,8 +44,8 @@ public class Audiobook {
   @Column(name = "created_dt", nullable = false)
   private Date createdDate = new Date();
 
-  @Column(name = "last_updated_dt")
-  private Date lastUpdatedDate;
+  @Column(name = "last_modified_dt")
+  private Date lastModifiedDate;
 
   @ManyToOne
   @JoinColumn(name = "fk_series_id")
@@ -61,7 +61,7 @@ public class Audiobook {
           joinColumns = @JoinColumn(name = "audiobook_id"),
           inverseJoinColumns = @JoinColumn(name = "author_id")
   )
-  private Set<Author> authors;
+  private Set<Author> authors = new HashSet<>();
 
   @ManyToMany
   @ToString.Exclude

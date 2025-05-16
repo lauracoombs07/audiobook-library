@@ -1,6 +1,7 @@
 package com.library.audiobooks.audiobook_library.controller;
 
 import com.library.audiobooks.audiobook_library.dto.AudiobookDTO;
+import com.library.audiobooks.audiobook_library.dto.AudiobookUpdateDTO;
 import com.library.audiobooks.audiobook_library.model.Audiobook;
 import com.library.audiobooks.audiobook_library.service.AudiobookService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,21 +23,41 @@ public class AudiobookController {
     this.audiobookService = audiobookService;
   }
 
+  // GET ALL
   @GetMapping
   public List<Audiobook> getAllAudiobooks() {
     return audiobookService.getAllAudiobooks();
   }
 
+  // GET BY ID
   @GetMapping("/{id}")
   public Optional<Audiobook> getAudiobookById(@PathVariable Long id) {
     return audiobookService.getAudiobookById(id);
   }
 
-
+  // POST
   @PostMapping
   public ResponseEntity<Audiobook> createAudiobook(@RequestBody AudiobookDTO audiobookDTO) {
     Audiobook createdAudiobook = audiobookService.createAudiobook(audiobookDTO);
     return ResponseEntity.status(HttpStatus.CREATED).body(createdAudiobook);
   }
-  // Add more endpoints as needed for other CRUD operations
+
+  // PUT
+  @PutMapping("/{id}")
+  public ResponseEntity<Audiobook> updateAudiobookById(
+          @PathVariable Long id,
+          @RequestBody AudiobookUpdateDTO updatedAudiobookDTO
+  ) {
+    Audiobook updatedAudiobook = audiobookService.updateAudiobookById(updatedAudiobookDTO);
+    System.out.println("UPDATED IN CONTROLLER" + updatedAudiobookDTO);
+    return ResponseEntity.status(HttpStatus.OK).body(updatedAudiobook);
+  }
+
+  // DELETE
+  @DeleteMapping("/{id}")
+  public ResponseEntity<Long> deleteAudiobookById(@PathVariable Long id) {
+    audiobookService.deleteAudiobookById(id);
+    return ResponseEntity.status(HttpStatus.OK).body(id);
+  }
+
 }

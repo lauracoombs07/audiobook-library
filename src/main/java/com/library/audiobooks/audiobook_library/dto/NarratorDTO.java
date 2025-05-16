@@ -9,7 +9,7 @@ import java.util.Date;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AuthorDTO {
+public class NarratorDTO {
   private String firstName;
   private String lastName;
   private Date createdDate = new Date();

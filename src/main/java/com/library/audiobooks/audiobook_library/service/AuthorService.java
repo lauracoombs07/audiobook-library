@@ -7,12 +7,10 @@ import com.library.audiobooks.audiobook_library.model.Audiobook;
 import com.library.audiobooks.audiobook_library.repository.AuthorRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -21,25 +19,54 @@ public class AuthorService {
 
   private final AuthorRepository authorRepository;
 
-  public AuthorDTO getAuthorById(Long id) {
-    Author author = authorRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Author not found"));
-
-    // Map entity to DTO
-    List<AudiobookSummaryDTO> sortedAudiobooks = author.getAudiobooks()
-            .stream()
-            .sorted(Comparator.comparing(Audiobook::getAudiobookTitle))
-            .map(a -> new AudiobookSummaryDTO(a.getId(), a.getAudiobookTitle()))
-            .collect(Collectors.toList());
-
-    AuthorDTO dto = new AuthorDTO();
-    dto.setId(author.getId());
-    dto.setFirstName(author.getFirstName());
-    dto.setLastName(author.getLastName());
-    dto.setAudiobooks(sortedAudiobooks);
-
-    return dto;
+  public List<Author> getAllAuthors() {
+    return authorRepository.findAll();
   }
+
+  public Author getAuthorById(Long id) {
+    return authorRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Author not found"));
+  }
+
+  public Author createAuthor(AuthorDTO authorDTO) {
+    Author authorDAO = new Author();
+    BeanUtils.copyProperties(authorDTO, authorDAO);
+    return authorRepository.save(authorDAO);
+  }
+
+  public Author updateAuthor(AuthorDTO authorToUpdate, Long id) {
+    Author existingAuthor = authorRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Cannot find Author to update in the database"));
+
+    BeanUtils.copyProperties(authorToUpdate, existingAuthor);
+
+    existingAuthor.setLastModifiedDate(new Date());
+    return authorRepository.save(existingAuthor);
+  }
+
+  public void deleteAuthor(Long id) {
+    authorRepository.deleteById(id);
+  }
+
+//  public AuthorDTO getAuthorById(Long id) {
+//    Author author = authorRepository.findById(id)
+//            .orElseThrow(() -> new RuntimeException("Author not found"));
+//
+//    // Map entity to DTO
+//    List<AudiobookSummaryDTO> sortedAudiobooks = author.getAudiobooks()
+//            .stream()
+//            .sorted(Comparator.comparing(Audiobook::getAudiobookTitle))
+//            .map(a -> new AudiobookSummaryDTO(a.getId(), a.getAudiobookTitle()))
+//            .collect(Collectors.toList());
+//
+//    AuthorDTO dto = new AuthorDTO();
+//    dto.setId(author.getId());
+//    dto.setFirstName(author.getFirstName());
+//    dto.setLastName(author.getLastName());
+//    dto.setAudiobooks(sortedAudiobooks);
+//
+//    return dto;
+//  }
 
   public Set<Author> findAuthorsByIds(List<Long> authorIds) {
     List<Author> authors = authorRepository.findAllById(authorIds);

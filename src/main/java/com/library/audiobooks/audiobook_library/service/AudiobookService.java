@@ -1,16 +1,15 @@
 package com.library.audiobooks.audiobook_library.service;
 
+import com.fasterxml.jackson.databind.util.BeanUtil;
 import com.library.audiobooks.audiobook_library.dto.AudiobookDTO;
+import com.library.audiobooks.audiobook_library.dto.AudiobookUpdateDTO;
 import com.library.audiobooks.audiobook_library.model.*;
 import com.library.audiobooks.audiobook_library.repository.*;
-import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.hibernate.annotations.processing.Find;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 
 @Service
@@ -52,45 +51,12 @@ public class AudiobookService {
     return audiobookRepository.save(audiobook);
   }
 
-//  public Audiobook createAudiobook(AudiobookDTO audiobookDTO) {
-//    // Create a new Audiobook entity
-//    Audiobook audiobook = new Audiobook();
-//
-//    // Use BeanUtils.copyProperties() to copy simple properties from DTO to entity
-//    BeanUtils.copyProperties(audiobookDTO, audiobook);
-//
-//    // Handle Series (if applicable)
-//    if (audiobookDTO.getSeriesId() != null) {
-//      Series series = seriesRepository.findById(audiobookDTO.getSeriesId())
-//              .orElseThrow(() -> new RuntimeException("Series not found"));
-//      audiobook.setSeries(series);
-//    }
-//
-//    // Handle Authors
-//    if (audiobookDTO.getAuthorIds() != null) {
-//      Set<Author> authors = authorRepository.findAllById(audiobookDTO.getAuthorIds());
-//      audiobook.setAuthors(authors);
-//    }
-//
-//    // Handle Narrators
-//    if (audiobookDTO.getNarratorIds() != null) {
-//      Set<Narrator> narrators = narratorRepository.findAllById(audiobookDTO.getNarratorIds());
-//      audiobook.setNarrators(narrators);
-//    }
-//
-//    // Save the Audiobook entity
-//    return audiobookRepository.save(audiobook);
-//  }
-  // Convert Set<Author> to List<Long> for DTO
-//    List<Long> authorIds = audiobook.getAuthors().stream()
-//            .map(Author::getId)
-//            .collect(Collectors.toList());
-//    audiobookDTO.setAuthorIds(authorIds);
-
   public Audiobook createAudiobook(AudiobookDTO audiobookDTO) {
     // Convert DTO to entity
     Audiobook audiobook = new Audiobook();
 
+//    // Use BeanUtils.copyProperties() to copy simple properties from DTO to entity
+//    BeanUtils.copyProperties(audiobookDTO, audiobook);
     audiobook.setAudiobookTitle(audiobookDTO.getAudiobookTitle());
     audiobook.setDescription(audiobookDTO.getDescription());
     audiobook.setSeriesInstallment(audiobookDTO.getSeriesInstallment());
@@ -99,7 +65,7 @@ public class AudiobookService {
     // Handle Genre
     // should be able to handle multiple genres.
     // Preferably a String list and look up by name
-    if(audiobookDTO.getGenreId() != null) {
+    if (audiobookDTO.getGenreId() != null) {
       Genre genre = genreRepository.findById(audiobookDTO.getGenreId())
               .orElseThrow(() -> new RuntimeException("Genre not found"));
       audiobook.setGenre(genre);
@@ -142,5 +108,31 @@ public class AudiobookService {
     return audiobookRepository.save(audiobook);
   }
 
+
+  // UPDATE
+  public Audiobook updateAudiobookById(AudiobookUpdateDTO updatedAudiobookDto) {
+//    Find existing to verify and log temporarily
+    Audiobook foundItem = audiobookRepository.findById(updatedAudiobookDto.getId())
+            .orElseThrow();
+    System.out.println(foundItem);
+
+    // Create new instance of Audiobook
+    Audiobook audiobook = new Audiobook();
+    // Copy Properties
+    BeanUtils.copyProperties(updatedAudiobookDto, audiobook);
+    audiobook.setAuthors(updatedAudiobookDto.getAuthors());
+    System.out.println("AUDIOBOOK AFTER COPY PROPS" + audiobook);
+
+    // update modified date
+    audiobook.setLastModifiedDate(new Date());
+    // Save
+    audiobookRepository.save(audiobook);
+    return audiobook;
+  }
+  // DELETE
+
+  public void deleteAudiobookById(Long id) {
+    audiobookRepository.deleteById(id);
+  }
 
 }

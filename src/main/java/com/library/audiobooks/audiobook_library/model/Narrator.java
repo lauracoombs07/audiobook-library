@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -24,6 +25,12 @@ public class Narrator {
 
   @Column(name = "last_name", nullable = false)
   private String lastName;
+
+  @Column(name = "created_dt", nullable = false)
+  private Date createdDate = new Date();
+
+  @Column(name = "last_modified_dt")
+  private Date lastModifiedDate;
 
   @ManyToMany(mappedBy = "narrators")
   @JsonIgnore

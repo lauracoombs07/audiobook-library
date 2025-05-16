@@ -20,10 +20,6 @@ public class Account {
   @Column(nullable = false)
   private String location;
 
-  // Owner Table
-  @ManyToOne
-  @JoinColumn(name = "fk_owner_id")
-  private Owner owner;
 
   private String username;
 
@@ -32,7 +28,12 @@ public class Account {
   @Column(name = "created_dt", nullable = false)
   private Date createdDate = new Date();
 
-  @Column(name = "last_updated_dt")
-  private Date lastUpdatedDate;
+  @Column(name = "last_modified_dt")
+  private Date lastModifiedDate;
+
+  // Owner Table
+  @ManyToOne
+  @JoinColumn(name = "fk_owner_id")
+  private Owner owner;
 
 }

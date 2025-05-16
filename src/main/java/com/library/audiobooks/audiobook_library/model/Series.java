@@ -12,11 +12,11 @@ import lombok.NoArgsConstructor;
 public class Series {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY) // Added generation strategy
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column(name = "series_name", nullable = false) // Renamed to avoid confusion with 'series' field
-  private String series;
+  @Column(name = "series_name", nullable = false)
+  private String seriesName;
 
   @Column(name = "total_count", nullable = false)
   private Integer totalCount;
