@@ -22,7 +22,10 @@ public class NarratorController {
     this.narratorService = narratorService;
   }
 
-  // GET ALL
+  /**
+   * Get All Narrators
+   * @return List of Narrators
+   */
   @GetMapping
   public ResponseEntity<List<Narrator>> getAllNarrators() {
     return ResponseEntity.status(HttpStatus.OK).body(narratorService.getAllNarrators());
@@ -45,5 +48,6 @@ public class NarratorController {
     Narrator createdNarrator = narratorService.createNarrator(narratorToCreate);
     return ResponseEntity.status(HttpStatus.OK).body(createdNarrator);
   }
+
 
 }

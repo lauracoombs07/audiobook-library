@@ -1,14 +1,11 @@
 package com.library.audiobooks.audiobook_library.service;
 
-import com.library.audiobooks.audiobook_library.dto.AuthorDTO;
 import com.library.audiobooks.audiobook_library.dto.NarratorCompleteDTO;
 import com.library.audiobooks.audiobook_library.dto.NarratorDTO;
-import com.library.audiobooks.audiobook_library.model.Author;
 import com.library.audiobooks.audiobook_library.model.Narrator;
 import com.library.audiobooks.audiobook_library.repository.NarratorRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
