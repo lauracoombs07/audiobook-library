@@ -1,5 +1,6 @@
 package com.library.audiobooks.audiobook_library.controller;
 
+import com.library.audiobooks.audiobook_library.dto.OwnerDTO;
 import com.library.audiobooks.audiobook_library.model.Owner;
 import com.library.audiobooks.audiobook_library.service.OwnerService;
 import org.springframework.http.HttpStatus;
@@ -21,8 +22,9 @@ public class OwnerController {
   }
 
   /**
-   * Get All Owners
-   * @return List of Owners
+   * Get All {@link Owner}
+   *
+   * @return List of {@link Owner}
    */
   @GetMapping
   public ResponseEntity<List<Owner>> getAllOwners() {
@@ -30,7 +32,11 @@ public class OwnerController {
   }
 
   /**
-   * Get a single Owner by Id
+   * Get {@link Owner} by optional Request Param
+   *
+   * @param id        optional id
+   * @param lastName  optional lastName
+   * @param firstName optional firstName
    * @return Owner
    */
   @GetMapping("/owner")
@@ -40,17 +46,29 @@ public class OwnerController {
           @RequestParam Optional<String> firstName
   ) {
     List<Owner> foundOwners = new ArrayList<>();
-    if(id.isPresent()) {
+    if (id.isPresent()) {
       foundOwners.add(ownerService.getOwnerById(id.get()));
     }
-    if(lastName.isPresent()) {
+    if (lastName.isPresent()) {
       foundOwners = ownerService.getOwnersByLastName(lastName.get());
     }
-    if(firstName.isPresent()) {
+    if (firstName.isPresent()) {
       foundOwners = ownerService.getOwnersByFirstName(firstName.get());
     }
 
     return ResponseEntity.status(HttpStatus.OK).body(foundOwners);
   }
 
+  /**
+   * Create new {@link Owner}
+   *
+   * @return {@link OwnerDTO}
+   */
+  @PostMapping("/owner")
+  public ResponseEntity<Owner> createNewOwner(
+          @RequestBody OwnerDTO ownerToCreate
+  ) {
+    Owner createdOwner = ownerService.createOwner(ownerToCreate);
+    return ResponseEntity.status(HttpStatus.CREATED).body(createdOwner);
+  }
 }

@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import java.util.Date;
 
 @Entity
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"location", "username"}))
 @Data  // Generates getters, setters, toString, equals, and hashCode
 @NoArgsConstructor
 @AllArgsConstructor
@@ -19,7 +20,6 @@ public class Account {
 
   @Column(nullable = false)
   private String location;
-
 
   private String username;
 

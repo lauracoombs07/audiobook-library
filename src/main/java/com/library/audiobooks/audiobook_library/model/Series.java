@@ -15,7 +15,7 @@ public class Series {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column(name = "series_name", nullable = false)
+  @Column(name = "series_name", nullable = false, unique = true)
   private String seriesName;
 
   @Column(name = "total_count", nullable = false)

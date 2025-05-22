@@ -1,16 +1,16 @@
 package com.library.audiobooks.audiobook_library.service;
 
-import com.library.audiobooks.audiobook_library.dto.AudiobookSummaryDTO;
 import com.library.audiobooks.audiobook_library.dto.AuthorDTO;
 import com.library.audiobooks.audiobook_library.model.Author;
-import com.library.audiobooks.audiobook_library.model.Audiobook;
 import com.library.audiobooks.audiobook_library.repository.AuthorRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,6 +26,14 @@ public class AuthorService {
   public Author getAuthorById(Long id) {
     return authorRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Author not found"));
+  }
+
+  public List<Author> getAuthorsByFirstName(String firstName) {
+    return authorRepository.findAllByFirstName(firstName);
+  }
+
+  public List<Author> getAuthorsByLastName(String lastName) {
+    return authorRepository.findAllByLastName(lastName);
   }
 
   public Author createAuthor(AuthorDTO authorDTO) {

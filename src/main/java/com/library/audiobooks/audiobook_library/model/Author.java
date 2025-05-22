@@ -1,6 +1,5 @@
 package com.library.audiobooks.audiobook_library.model;
 
-import brave.internal.Nullable;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
@@ -10,6 +9,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"first_name", "last_name"}))
 @Data  // Generates getters, setters, toString, equals, and hashCode
 @NoArgsConstructor
 @AllArgsConstructor
@@ -39,7 +39,7 @@ public class Author {
 
   // convenience method
   public void addAudiobook(Audiobook theAudiobook) {
-    if(audiobooks == null) {
+    if (audiobooks == null) {
       audiobooks = new HashSet<>();
     }
     audiobooks.add(theAudiobook);

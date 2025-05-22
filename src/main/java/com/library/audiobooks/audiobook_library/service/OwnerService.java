@@ -1,11 +1,14 @@
 package com.library.audiobooks.audiobook_library.service;
 
+import com.library.audiobooks.audiobook_library.dto.OwnerDTO;
 import com.library.audiobooks.audiobook_library.model.Owner;
 import com.library.audiobooks.audiobook_library.repository.OwnerRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor // if not here, Service May not have been initialized...
@@ -26,6 +29,14 @@ public class OwnerService {
   }
 
   public List<Owner> getOwnersByFirstName(String firstName) {
-    return ownerRepository.findAllByLastName(firstName);
+    return ownerRepository.findAllByFirstName(firstName);
   }
+
+  public Owner createOwner(OwnerDTO ownerDTO) {
+
+    Owner ownerDAO = new Owner();
+    BeanUtils.copyProperties(ownerDTO, ownerDAO);
+    return ownerRepository.save(ownerDAO);
+  }
+
 }
